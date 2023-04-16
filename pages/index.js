@@ -1,17 +1,19 @@
-import { CSSReset } from "@/components/CSSReset";
 import config from "../config.json";
 import styled from "styled-components";
 import Menu from "@/components/Menu";
 import { StyledTimeline } from "@/components/TimeLine";
 import { Footer } from "@/components/Footer";
-import React from "react";
+import React, { useContext } from "react";
+import { RunVideoContext } from "@/contexts/RunVideo";
+import Link from "next/link";
+import { formaterUrl } from "@/utils/formatUrl";
 
 function HomePage() {
+  const { setVideoUrl } = useContext(RunVideoContext);
   const [filterValue, setFilterValue] = React.useState("");
 
   return (
     <>
-      <CSSReset />
       <div
         style={{
           display: "flex",
@@ -21,7 +23,7 @@ function HomePage() {
       >
         <Menu filterValue={filterValue} setFilterValue={setFilterValue} />
         <Header />
-        <TimeLine searchValue={filterValue} playlists={config.playlists} />
+        <TimeLine searchValue={filterValue} playlists={config.playlists} setVideoUrl={setVideoUrl} />
         <Footer favorites={config.favorites} />
       </div>
     </>
@@ -31,6 +33,8 @@ function HomePage() {
 export default HomePage;
 
 const StyledHeader = styled.div`
+  background-color: ${({theme}) => theme.backgroundLevel1};
+
   img {
     width: 80px;
     height: 80px;
@@ -70,6 +74,7 @@ function Header() {
 
 function TimeLine(props) {
   const playlistNames = Object.keys(props.playlists);
+  
   return (
     <StyledTimeline>
       {playlistNames.map((playlistName) => {
@@ -86,10 +91,10 @@ function TimeLine(props) {
                 })
                 .map((video) => {
                   return (
-                    <a key={video.url} href={video.url}>
+                    <Link key={video.url} href={`/video?id=${formaterUrl(video.url)}`}>
                       <img src={video.thumb} />
                       <span>{video.title}</span>
-                    </a>
+                    </Link>
                   );
                 })}
             </div>

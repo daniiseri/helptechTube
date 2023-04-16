@@ -18,7 +18,7 @@ const FooterStyled = styled.footer`
 
   a {
     text-decoration: none;
-    color: black;
+    color: ${({theme}) => theme.textColorBase};
     display: flex;
     flex-direction: column;
     align-items: center;

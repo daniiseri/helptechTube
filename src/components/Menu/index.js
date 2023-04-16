@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import Search from "./components/Search";
+import DarkModeSwitch from "./components/DarkModeSwitch";
+import Link from "next/link";
 
 const StyledMenu = styled.header`
   display: flex;
@@ -14,7 +16,7 @@ const StyledMenu = styled.header`
   width: 100%;
 
   .text {
-    fill: ${({ theme }) => theme.textColorBase || "#222222"};
+    color: ${({ theme }) => theme.textColorBase || "#222222"};
   }
 
   @media (max-width: 600px) {
@@ -25,14 +27,16 @@ const StyledMenu = styled.header`
 `;
 
 export default function Menu({ filterValue, setFilterValue }) {
+
   return (
     <StyledMenu>
-      <div
+      <Link
         style={{
           display: "flex",
           alignItems: "center",
           gap: "4px",
         }}
+        href='/'
       >
         <img
           style={{
@@ -41,8 +45,9 @@ export default function Menu({ filterValue, setFilterValue }) {
           src="https://www.svgrepo.com/download/13671/youtube.svg"
         />
         <h1 className="text">helptechTube</h1>
-      </div>
+      </Link>
       <Search filterValue={filterValue} setFilterValue={setFilterValue} />
+      <DarkModeSwitch />
     </StyledMenu>
   );
 }

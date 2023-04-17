@@ -1,5 +1,6 @@
 import { CSSReset } from "@/components/CSSReset";
 import { ColorModeContext, ColorModeProvider } from "@/components/Menu/components/ColorMode";
+import { RegisterVideo } from "@/components/RegisterVideo";
 import { RunVideoContext, RunVideoProvider } from "@/contexts/RunVideo";
 import { useContext } from "react";
 import { ThemeProvider } from "styled-components";
@@ -31,13 +32,14 @@ function ProviderWrapper({children}) {
     )
 }
 
-function MyApp({ Component, pageProps }) {
+function Root({ Component, pageProps }) {
     const {mode} = useContext(ColorModeContext);
 
     return (
         <ThemeProvider theme={theme[mode]}>
             <CSSReset />
             <Component {...pageProps} />
+            <RegisterVideo/>
         </ThemeProvider>
     )
 }
@@ -45,7 +47,7 @@ function MyApp({ Component, pageProps }) {
 export default function _App(props){
     return (
         <ProviderWrapper>
-            <MyApp  {...props}/>
+            <Root  {...props}/>
         </ProviderWrapper>
     )
 }

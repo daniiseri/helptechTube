@@ -1,7 +1,6 @@
 import { CSSReset } from "@/components/CSSReset";
 import { ColorModeContext, ColorModeProvider } from "@/components/Menu/components/ColorMode";
 import { RegisterVideo } from "@/components/RegisterVideo";
-import { RunVideoContext, RunVideoProvider } from "@/contexts/RunVideo";
 import { useContext } from "react";
 import { ThemeProvider } from "styled-components";
 
@@ -25,9 +24,7 @@ const theme = {
 function ProviderWrapper({children}) {
     return (
         <ColorModeProvider initialMode={'light'}>
-            <RunVideoProvider initialVideoUrl={'https://www.youtube.com/embed/YVI-q3idGiM'}>
-                {children}
-            </RunVideoProvider>
+            {children}  
         </ColorModeProvider>
     )
 }

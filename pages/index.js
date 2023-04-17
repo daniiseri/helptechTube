@@ -3,15 +3,44 @@ import styled from "styled-components";
 import Menu from "@/components/Menu";
 import { StyledTimeline } from "@/components/TimeLine";
 import { Footer } from "@/components/Footer";
-import React, { useContext } from "react";
-import { RunVideoContext } from "@/contexts/RunVideo";
+import React from "react";
 import Link from "next/link";
 import { formaterUrl } from "@/utils/formatUrl";
+import { VideoService } from "@/services/VideoService";
 
 function HomePage() {
-  const { setVideoUrl } = useContext(RunVideoContext);
   const [filterValue, setFilterValue] = React.useState("");
+  const [playlists, setPlaylists] = React.useState({});
 
+  React.useEffect(()=>{
+    VideoService()
+      .getAllVideo()
+      .then(({data}) => {
+        const newPlaylist = [];
+
+        data.forEach(video => {
+          if(!newPlaylist[video.playlist]){
+            newPlaylist[video.playlist] = []
+          }
+
+          newPlaylist[video.playlist].push(video)
+        })
+
+        setPlaylists(newPlaylist);
+      });
+
+      VideoService()
+        .listen((payload) => {
+          setPlaylists(prevState => {
+            if(!prevState[payload.new.playlist]){
+              return {...prevState, [payload.new.playlist]: [payload.new]};
+            }
+
+            return {...prevState, [payload.new.playlist]: [...prevState[payload.new.playlist], payload.new]}
+          })
+        })
+  },[])
+  
   return (
     <>
       <div
@@ -23,7 +52,7 @@ function HomePage() {
       >
         <Menu filterValue={filterValue} setFilterValue={setFilterValue} />
         <Header />
-        <TimeLine searchValue={filterValue} playlists={config.playlists} setVideoUrl={setVideoUrl} />
+        <TimeLine searchValue={filterValue} playlists={playlists} />
         <Footer favorites={config.favorites} />
       </div>
     </>

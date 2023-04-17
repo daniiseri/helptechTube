@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { StyledRegisterVideo } from "./styles";
 import { userForm } from "@/hooks/useForm";
+import { formaterUrl, generateThumb } from '../../utils/formatUrl';
+import { VideoService } from "@/services/VideoService";
 
 export function RegisterVideo() {
   const [formVisibility, setFormVisibility] = useState(false);
-  const {values, handleChange, clearForm} = userForm({
+  const { values, handleChange, clearForm } = userForm({
     title: '',
     url: ''
   })
 
   return (
     <StyledRegisterVideo>
-      <button 
+      <button
         className="add-video"
-        onClick={()=>setFormVisibility(true)}
+        onClick={() => setFormVisibility(true)}
       >
         +
       </button>
@@ -21,28 +23,44 @@ export function RegisterVideo() {
 
       {
         formVisibility
-        &&  
-      (<form onSubmit={(e) => {
-        e.preventDefault();
+        &&
+        (<form onSubmit={(e) => {
+          e.preventDefault();
 
-        setFormVisibility(false);
-        clearForm();
-      }}>
-        <div>
-          <button 
-            className="close-modal"
-            onClick={() => setFormVisibility(false)}
-          >
-            x
-          </button>
+          VideoService()
+            .create({
+              ...values,
+              url: values.url,
+              thumb: generateThumb(formaterUrl(values.url)),
+              playlist: 'Jogos'
+            })
+            .then((response) => console.log(response))
+            .catch((err) => console.log(err))
 
-          <input name='title' placeholder="Titulo do vídeo" value={values.title} onChange={handleChange}/>
-          <input name='url' placeholder="URL" value={values.url} onChange={handleChange}/>
-          <button type="submit">
-            Cadastrar
-          </button>
-        </div>
-      </form>)
+          setFormVisibility(false);
+          clearForm();
+        }}>
+          <div>
+            <button
+              className="close-modal"
+              onClick={() => setFormVisibility(false)}
+            >
+              x
+            </button>
+
+            <input name='title' placeholder="Titulo do vídeo" value={values.title} onChange={handleChange} required />
+            <input name='url' placeholder="URL" value={values.url} onChange={handleChange} required />
+            <button type="submit">
+              Cadastrar
+            </button>
+
+            {
+              values.url.includes('https://www.youtube.com/watch?v=') && <img className="thumb" src={generateThumb(formaterUrl(values.url))} />
+            }
+          </div>
+
+
+        </form>)
       }
     </StyledRegisterVideo>
   )
